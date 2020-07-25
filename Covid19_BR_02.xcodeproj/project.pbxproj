@@ -11,6 +11,9 @@
 		207FF85924CB631A00D06309 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207FF85824CB631A00D06309 /* ContentView.swift */; };
 		207FF85B24CB631A00D06309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 207FF85A24CB631A00D06309 /* Assets.xcassets */; };
 		207FF85E24CB631A00D06309 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 207FF85D24CB631A00D06309 /* Preview Assets.xcassets */; };
+		2084E74124CBC96400322652 /* CovidData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084E74024CBC96400322652 /* CovidData.swift */; };
+		2084E74324CBE83100322652 /* Extenss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084E74224CBE83100322652 /* Extenss.swift */; };
+		2084E74524CBF56F00322652 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2084E74424CBF56F00322652 /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +23,9 @@
 		207FF85A24CB631A00D06309 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		207FF85D24CB631A00D06309 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		207FF85F24CB631A00D06309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2084E74024CBC96400322652 /* CovidData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CovidData.swift; sourceTree = "<group>"; };
+		2084E74224CBE83100322652 /* Extenss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extenss.swift; sourceTree = "<group>"; };
+		2084E74424CBF56F00322652 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +60,9 @@
 			children = (
 				207FF85624CB631A00D06309 /* Covid19_BR_02App.swift */,
 				207FF85824CB631A00D06309 /* ContentView.swift */,
+				2084E74024CBC96400322652 /* CovidData.swift */,
+				2084E74224CBE83100322652 /* Extenss.swift */,
+				2084E74424CBF56F00322652 /* Model.swift */,
 				207FF85A24CB631A00D06309 /* Assets.xcassets */,
 				207FF85F24CB631A00D06309 /* Info.plist */,
 				207FF85C24CB631A00D06309 /* Preview Content */,
@@ -138,7 +147,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2084E74524CBF56F00322652 /* Model.swift in Sources */,
+				2084E74124CBC96400322652 /* CovidData.swift in Sources */,
 				207FF85924CB631A00D06309 /* ContentView.swift in Sources */,
+				2084E74324CBE83100322652 /* Extenss.swift in Sources */,
 				207FF85724CB631A00D06309 /* Covid19_BR_02App.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
