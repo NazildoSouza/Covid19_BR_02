@@ -10,6 +10,8 @@ import SDWebImageSwiftUI
 
 struct ContentView: View {
     @StateObject var covidData = CovidData()
+    @State private var dragAmount = CGSize.zero
+    @State private var showGraphic = false
     
     var body: some View {
         Group {
@@ -92,7 +94,6 @@ struct ContentView: View {
                             .padding(.vertical)
                             .frame(width: (UIScreen.main.bounds.width / 2) - 20)
                             .background(Color.orange)
-                            
                             .cornerRadius(12)
                             .shadow(radius: 5)
                             
@@ -171,73 +172,143 @@ struct ContentView: View {
                         Spacer(minLength: 5)
                         
                         ZStack {
-                            LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.1412506998, green: 0.9358793497, blue: 0.6233919263, alpha: 1)), Color(#colorLiteral(red: 0, green: 0.6720501781, blue: 0.887023747, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                                .edgesIgnoringSafeArea(.all)
-                            
-                            
-                            Blur(style: .systemMaterial)
-                                .edgesIgnoringSafeArea(.all)
-                            
-                            VStack {
-                                HStack {
-                                    Spacer()
-                                    
-                                    Text("Últimos 7 Dias")
-                                        .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
-                                    
-                                    Spacer()
-                                }
-                                .padding(.all)
-                                
-                                if !covidData.daily.isEmpty {
-                                    
-                                    HStack {
-                                        ForEach(covidData.daily.sorted(), id: \.id) { i in
-                                            VStack {
-                                                Text(i.cases > 1000 ? "\(i.cases / 1000)K" : "\(i.cases)")
-                                                    .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .caption2 : .caption)
-                                                    .foregroundColor(.secondary)
-                                                    .lineLimit(1)
-                                                
-                                                GeometryReader { g in
-                                                    VStack {
-                                                        Spacer(minLength: 0)
-                                                        
-                                                        Rectangle()
-                                                            .fill(Color.red)
-                                                            .frame(width: 20, height: self.covidData.getHeight(value: i.cases, height: g.frame(in: .global).height))
-                                                            .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 6, height: 6)))
-                                                    }
-                                                }
-                                                .padding(.leading, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 15)
-                                                
-                                                Text(i.day)
-                                                    .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .caption2 : .caption)
-                                                    .foregroundColor(.secondary)
-                                                    .lineLimit(1)
-                                                    .padding(.bottom, UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 0)
-                                                
-                                            }
-                                        }
-                                    }
-                                    .padding(.horizontal)
-                                    
-                                } else {
-                                    if covidData.statusCode2 == 404 {
-                                        Text("Estado não encontrado ou não possui dados históricos do município")
+                            VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 15 : (showGraphic ? 30 : 15)) {
+                                VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
+                                    Text("Casos Confirmados Hoje")
+                                        .fontWeight(.bold)
+                                   
+                                    if covidData.main != nil {
+                                        Text("\((covidData.main?.todayCases ?? 0))")
+                                            .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
                                             .fontWeight(.bold)
-                                            .multilineTextAlignment(.center)
                                     } else {
                                         ProgressView()
                                     }
+                                    
                                 }
+                                .padding(.vertical)
+                                .frame(width: (UIScreen.main.bounds.width) - 50)
+                                .background(Color.gray)
+                                .cornerRadius(15)
+                                .shadow(radius: 5)
+                                
+                                VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
+                                    Text("Mortes Confirmadas Hoje")
+                                        .fontWeight(.bold)
+                                   
+                                    if covidData.main != nil {
+                                        Text("\((covidData.main?.todayDeaths ?? 0))")
+                                            .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
+                                            .fontWeight(.bold)
+                                    } else {
+                                        ProgressView()
+                                    }
+                                    
+                                }
+                                .padding(.vertical)
+                                .frame(width: (UIScreen.main.bounds.width) - 50)
+                                .background(Color.red)
+                                .cornerRadius(15)
+                                .shadow(radius: 5)
                             }
-                            .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
+                            .offset(y: showGraphic ? -50 : 0)
                             
+                            ZStack(alignment: .top) {
+                                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.1412506998, green: 0.9358793497, blue: 0.6233919263, alpha: 1)), Color(#colorLiteral(red: 0, green: 0.6720501781, blue: 0.887023747, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                                    .edgesIgnoringSafeArea(.all)
+                                
+                                
+                                Blur(style: .systemMaterial)
+                                    .edgesIgnoringSafeArea(.all)
+                                
+                                VStack {
+                                    Capsule()
+                                        .background(Color.red)
+                                        .frame(width: 60, height: 5)
+                                        .padding(.top)
+                                    
+                                    HStack {
+                                        Spacer()
+                                        
+                                        Text("Últimos 7 Dias")
+                                            .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
+                                        
+                                        Spacer()
+                                    }
+                                    .padding([.horizontal, .bottom])
+                                    
+                                    if !covidData.daily.isEmpty {
+                                        
+                                        HStack {
+                                            ForEach(covidData.daily.sorted(), id: \.id) { i in
+                                                VStack {
+                                                    Text(i.cases > 1000 ? "\(i.cases / 1000)K" : "\(i.cases)")
+                                                        .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .caption2 : .caption)
+                                                        .foregroundColor(.secondary)
+                                                        .lineLimit(1)
+                                                    
+                                                    GeometryReader { g in
+                                                        VStack {
+                                                            Spacer(minLength: 0)
+                                                            
+                                                            Rectangle()
+                                                                .fill(Color.red)
+                                                                .frame(width: 20, height: self.covidData.getHeight(value: i.cases, height: g.frame(in: .global).height))
+                                                                .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 6, height: 6)))
+                                                        }
+                                                    }
+                                                    .padding(.leading, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 15)
+                                                    
+                                                    Text(i.day)
+                                                        .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .caption2 : .caption)
+                                                        .foregroundColor(.secondary)
+                                                        .lineLimit(1)
+                                                        .padding(.bottom, UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 0)
+                                                    
+                                                }
+                                            }
+                                        }
+                                        .padding(.horizontal)
+                                        
+                                    } else {
+                                        if covidData.statusCode2 == 404 {
+                                            Text("Estado não encontrado ou não possui dados históricos do município")
+                                                .fontWeight(.bold)
+                                                .multilineTextAlignment(.center)
+                                        } else {
+                                            ProgressView()
+                                        }
+                                    }
+                                }
+                                .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
+                                
+                            }
+                            .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 40, height: 40)))
+                            .shadow(radius: 8)
+                            .edgesIgnoringSafeArea(.bottom)
+                            .offset(y: showGraphic ? (UIDevice.current.name == "iPhone SE (2nd generation)" ? 250 : 400) : 0)
+                            .gesture(
+                                DragGesture()
+                                    .onChanged { self.dragAmount = $0.translation }
+                                    .onEnded { value in
+                                        if self.dragAmount.height > 150 {
+                                            withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)){
+                                                
+                                                self.showGraphic = true
+                                                
+                                            }
+                                        } else if self.dragAmount.height < -50 {
+                                            withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)){
+                                                
+                                                self.showGraphic = false
+
+                                            }
+                                        }
+                                        
+                                        }
+                            
+                            )
                         }
-                        .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 40, height: 40)))
-                        .shadow(radius: 8)
-                        .edgesIgnoringSafeArea(.bottom)
                     }
                     .alert(isPresented: self.$covidData.alert) {
                         Alert(title: Text("Erro"), message: Text("País não encontrado ou sem casos.\nPor Favor escolha outo País !"), dismissButton: .destructive(Text("OK")) {
