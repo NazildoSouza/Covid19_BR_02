@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct ContentView: View {
     @StateObject var covidData = CovidData()
     
     var body: some View {
         Group {
-            if covidData.response == 200 {
+            if covidData.response == 200 || covidData.main != nil {
                 ZStack {
                     LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.2196078449, green: 0.007843137719, blue: 0.8549019694, alpha: 1)), Color(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                         .edgesIgnoringSafeArea(.all)
@@ -28,10 +29,39 @@ struct ContentView: View {
                             
                             Spacer()
                             
-                            Button(action: { covidData.dialog() }, label: {
-                                Text("\(covidData.country.uppercased())")
+                            if covidData.selectPicker == 0 {
+                                Button(action: {
+                                    covidData.paisTemp = covidData.country
+                                    covidData.showPicker.toggle()
+                                }, label: {
+                                    Text("\(covidData.country)")
+                                        .fontWeight(.bold)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.trailing, 5)
+                                })
+                                
+                                ZStack {
+                                    Capsule()
+                                        .frame(width: 50, height: 30)
+                                        .background(Color(.red))
+                                        .clipShape(Capsule())
+                                        .shadow(radius: 5)
+                                    
+                                WebImage(url: URL(string: covidData.main?.countryInfo?.flag ?? ""))
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 30)
+                                    .clipShape(Capsule())
+                                    .shadow(radius: 5)
+                                    
+                                }
+                                
+                            } else {
+                                Text("Mundial")
                                     .fontWeight(.bold)
-                            })
+                                    .foregroundColor(.blue)
+                            }
+                            
                         }
                         .padding(.top, 15)
                         .padding(.horizontal)
@@ -43,7 +73,7 @@ struct ContentView: View {
                         }.pickerStyle(SegmentedPickerStyle())
                         .padding(.horizontal, 15)
                         .padding(.all)
-                        .disabled(covidData.main == nil || covidData.daily.isEmpty)
+                        .disabled((covidData.main == nil && covidData.response == 200) || (covidData.daily.isEmpty && covidData.statusCode2 == 200))
                         
                         HStack(spacing: 12) {
                             VStack(spacing: 10) {
@@ -164,7 +194,7 @@ struct ContentView: View {
                                     HStack {
                                         ForEach(covidData.daily.sorted(), id: \.id) { i in
                                             VStack {
-                                                Text("\(i.cases / 1000)K")
+                                                Text(i.cases > 1000 ? "\(i.cases / 1000)K" : "\(i.cases)")
                                                     .font(.caption)
                                                     .foregroundColor(.secondary)
                                                 
@@ -175,7 +205,7 @@ struct ContentView: View {
                                                         Rectangle()
                                                             .fill(Color.red)
                                                             .frame(width: 20, height: self.covidData.getHeight(value: i.cases, height: g.frame(in: .global).height))
-                                                            .cornerRadius(5)
+                                                            .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 6, height: 6)))
                                                     }
                                                 }
                                                 .padding(.leading)
@@ -189,7 +219,13 @@ struct ContentView: View {
                                     .padding(.horizontal)
                                     
                                 } else {
-                                    ProgressView()
+                                    if covidData.statusCode2 == 404 {
+                                        Text("Estado não encontrado ou não possui dados históricos do município")
+                                            .fontWeight(.bold)
+                                            .multilineTextAlignment(.center)
+                                    } else {
+                                        ProgressView()
+                                    }
                                 }
                             }
                             .padding(.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom)
@@ -200,9 +236,23 @@ struct ContentView: View {
                         .edgesIgnoringSafeArea(.bottom)
                     }
                     .alert(isPresented: self.$covidData.alert) {
-                        Alert(title: Text("Erro"), message: Text("Nome de país invalido!"), dismissButton: .destructive(Text("OK")))
+                        Alert(title: Text("Erro"), message: Text("País não encontrado ou sem casos.\nPor Favor escolha outo País !"), dismissButton: .destructive(Text("OK")) {
+                            covidData.country = covidData.paisTemp
+                            covidData.loadData()
+                        })
                     }
+                    if covidData.showPicker {
+                        Color.black.opacity(0.4).edgesIgnoringSafeArea(.all)
+                    }
+                    
+                    PickerView(covidData: covidData)
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 3)
+                        .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 20, height: 20)))
+                        .offset(y: covidData.showPicker ? UIScreen.main.bounds.height / 3 : UIScreen.main.bounds.height)
+                        .animation(.default)
+
                 }
+                
             } else {
                 ProgressView("Aguarde...")
             }

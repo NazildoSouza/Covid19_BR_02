@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2003185624CE6DF700BF3FF7 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2003185524CE6DF700BF3FF7 /* PickerView.swift */; };
+		2003185924CE8E0E00BF3FF7 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2003185824CE8E0E00BF3FF7 /* SDWebImageSwiftUI */; };
 		207FF85724CB631A00D06309 /* Covid19_BR_02App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207FF85624CB631A00D06309 /* Covid19_BR_02App.swift */; };
 		207FF85924CB631A00D06309 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207FF85824CB631A00D06309 /* ContentView.swift */; };
 		207FF85B24CB631A00D06309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 207FF85A24CB631A00D06309 /* Assets.xcassets */; };
@@ -17,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2003185524CE6DF700BF3FF7 /* PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
 		207FF85324CB631A00D06309 /* Covid19_BR_02.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Covid19_BR_02.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		207FF85624CB631A00D06309 /* Covid19_BR_02App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Covid19_BR_02App.swift; sourceTree = "<group>"; };
 		207FF85824CB631A00D06309 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -33,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2003185924CE8E0E00BF3FF7 /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,9 +64,10 @@
 			children = (
 				207FF85624CB631A00D06309 /* Covid19_BR_02App.swift */,
 				207FF85824CB631A00D06309 /* ContentView.swift */,
+				2003185524CE6DF700BF3FF7 /* PickerView.swift */,
 				2084E74024CBC96400322652 /* CovidData.swift */,
-				2084E74224CBE83100322652 /* Extenss.swift */,
 				2084E74424CBF56F00322652 /* Model.swift */,
+				2084E74224CBE83100322652 /* Extenss.swift */,
 				207FF85A24CB631A00D06309 /* Assets.xcassets */,
 				207FF85F24CB631A00D06309 /* Info.plist */,
 				207FF85C24CB631A00D06309 /* Preview Content */,
@@ -94,6 +99,9 @@
 			dependencies = (
 			);
 			name = Covid19_BR_02;
+			packageProductDependencies = (
+				2003185824CE8E0E00BF3FF7 /* SDWebImageSwiftUI */,
+			);
 			productName = Covid19_BR_02;
 			productReference = 207FF85324CB631A00D06309 /* Covid19_BR_02.app */;
 			productType = "com.apple.product-type.application";
@@ -121,6 +129,9 @@
 				Base,
 			);
 			mainGroup = 207FF84A24CB631900D06309;
+			packageReferences = (
+				2003185724CE8E0E00BF3FF7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			productRefGroup = 207FF85424CB631A00D06309 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -150,6 +161,7 @@
 				2084E74524CBF56F00322652 /* Model.swift in Sources */,
 				2084E74124CBC96400322652 /* CovidData.swift in Sources */,
 				207FF85924CB631A00D06309 /* ContentView.swift in Sources */,
+				2003185624CE6DF700BF3FF7 /* PickerView.swift in Sources */,
 				2084E74324CBE83100322652 /* Extenss.swift in Sources */,
 				207FF85724CB631A00D06309 /* Covid19_BR_02App.swift in Sources */,
 			);
@@ -340,6 +352,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2003185724CE8E0E00BF3FF7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2003185824CE8E0E00BF3FF7 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2003185724CE8E0E00BF3FF7 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 207FF84B24CB631900D06309 /* Project object */;
 }

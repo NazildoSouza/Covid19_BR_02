@@ -267,8 +267,7 @@ var countryList = [
     "Western Sahara",
     "Yemen",
     "Zambia",
-    "Zimbabwe",
-    "Åland Islands"
+    "Zimbabwe"
 ]
 
 
