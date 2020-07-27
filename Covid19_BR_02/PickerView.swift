@@ -21,6 +21,7 @@ struct PickerView: View {
                 }
                 .labelsHidden()
                 .padding(.vertical, 50)
+                .padding(.top, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 50)
 
             
             HStack {

@@ -21,10 +21,10 @@ struct ContentView: View {
                     Blur(style: .systemMaterial)
                         .edgesIgnoringSafeArea(.all)
                     
-                    VStack(spacing: 15) {
+                    VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 15) {
                         HStack {
                             Text("Estatísticas")
-                                .font(.title)
+                                .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
                                 .fontWeight(.bold)
                             
                             Spacer()
@@ -76,13 +76,13 @@ struct ContentView: View {
                         .disabled((covidData.main == nil && covidData.response == 200) || (covidData.daily.isEmpty && covidData.statusCode2 == 200))
                         
                         HStack(spacing: 12) {
-                            VStack(spacing: 10) {
+                            VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
                                 Text("Infectados")
                                     .fontWeight(.bold)
                                
                                 if covidData.main != nil {
                                     Text("\((covidData.main?.cases ?? 0))")
-                                        .font(.title)
+                                        .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
                                         .fontWeight(.bold)
                                 } else {
                                     ProgressView()
@@ -96,13 +96,13 @@ struct ContentView: View {
                             .cornerRadius(12)
                             .shadow(radius: 5)
                             
-                            VStack(spacing: 10) {
+                            VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
                                 Text("Mortos")
                                     .fontWeight(.bold)
                                 
                                 if covidData.main != nil {
                                     Text("\(covidData.main?.deaths ?? 0)")
-                                        .font(.title)
+                                        .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
                                         .fontWeight(.bold)
                                 } else {
                                     ProgressView()
@@ -115,8 +115,8 @@ struct ContentView: View {
                             .shadow(radius: 5)
                         }
                         
-                        HStack(spacing: 12) {
-                            VStack(spacing: 10) {
+                        HStack(spacing: 8) {
+                            VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
                                 Text("Recuperados")
                                     .fontWeight(.bold)
                                 
@@ -128,12 +128,12 @@ struct ContentView: View {
                                 }
                             }
                             .padding(.vertical)
-                            .frame(width: (UIScreen.main.bounds.width  / 3) - 20)
+                            .frame(width: (UIScreen.main.bounds.width  / 3) - 10)
                             .background(Color.green)
                             .cornerRadius(12)
                             .shadow(radius: 5)
                             
-                            VStack(spacing: 10) {
+                            VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
                                 Text("Ativos")
                                     .fontWeight(.bold)
                                 
@@ -145,12 +145,12 @@ struct ContentView: View {
                                 }
                             }
                             .padding(.vertical)
-                            .frame(width: (UIScreen.main.bounds.width  / 3) - 20)
+                            .frame(width: (UIScreen.main.bounds.width  / 3) - 10)
                             .background(Color.blue)
                             .cornerRadius(12)
                             .shadow(radius: 5)
                             
-                            VStack(spacing: 10) {
+                            VStack(spacing: UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 10) {
                                 Text("Sérios")
                                     .fontWeight(.bold)
                                 
@@ -162,7 +162,7 @@ struct ContentView: View {
                                 }
                             }
                             .padding(.vertical)
-                            .frame(width: (UIScreen.main.bounds.width  / 3) - 20)
+                            .frame(width: (UIScreen.main.bounds.width  / 3) - 10)
                             .background(Color.purple)
                             .cornerRadius(12)
                             .shadow(radius: 5)
@@ -183,7 +183,7 @@ struct ContentView: View {
                                     Spacer()
                                     
                                     Text("Últimos 7 Dias")
-                                        .font(.title)
+                                        .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .title2 : .title)
                                     
                                     Spacer()
                                 }
@@ -195,8 +195,9 @@ struct ContentView: View {
                                         ForEach(covidData.daily.sorted(), id: \.id) { i in
                                             VStack {
                                                 Text(i.cases > 1000 ? "\(i.cases / 1000)K" : "\(i.cases)")
-                                                    .font(.caption)
+                                                    .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .caption2 : .caption)
                                                     .foregroundColor(.secondary)
+                                                    .lineLimit(1)
                                                 
                                                 GeometryReader { g in
                                                     VStack {
@@ -208,11 +209,14 @@ struct ContentView: View {
                                                             .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 6, height: 6)))
                                                     }
                                                 }
-                                                .padding(.leading)
+                                                .padding(.leading, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 15)
                                                 
                                                 Text(i.day)
-                                                    .font(.caption)
+                                                    .font(UIDevice.current.name == "iPhone SE (2nd generation)" ? .caption2 : .caption)
                                                     .foregroundColor(.secondary)
+                                                    .lineLimit(1)
+                                                    .padding(.bottom, UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 0)
+                                                
                                             }
                                         }
                                     }
@@ -246,7 +250,7 @@ struct ContentView: View {
                     }
                     
                     PickerView(covidData: covidData)
-                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 3)
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
                         .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 20, height: 20)))
                         .offset(y: covidData.showPicker ? UIScreen.main.bounds.height / 3 : UIScreen.main.bounds.height)
                         .animation(.default)
