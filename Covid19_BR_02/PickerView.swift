@@ -21,13 +21,14 @@ struct PickerView: View {
                 }
                 .labelsHidden()
                 .padding(.vertical, 50)
-                .padding(.top, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 50)
+                .padding(.top, UIDevice.current.name == "iPhone SE (2nd generation)" ? 30 : 40)
 
             
             HStack {
                 Button(action: {
                     covidData.country = covidData.paisTemp
-                    covidData.showPicker = false
+                        covidData.showPicker = false
+                    
                 }, label: {
                     Text("Cancelar")
                         .accentColor(.red)

@@ -11,7 +11,9 @@ import SDWebImageSwiftUI
 struct ContentView: View {
     @StateObject var covidData = CovidData()
     @State private var dragAmount = CGSize.zero
+    @State private var offset: CGFloat = UIDevice.current.name == "iPhone SE (2nd generation)" ? -247 : -400
     @State private var showGraphic = false
+    private let bottomGraph: CGFloat = UIDevice.current.name == "iPhone SE (2nd generation)" ? 75 : 90
     
     var body: some View {
         Group {
@@ -34,7 +36,8 @@ struct ContentView: View {
                             if covidData.selectPicker == 0 {
                                 Button(action: {
                                     covidData.paisTemp = covidData.country
-                                    covidData.showPicker.toggle()
+                                        covidData.showPicker.toggle()
+                                    
                                 }, label: {
                                     Text("\(covidData.country)")
                                         .fontWeight(.bold)
@@ -212,7 +215,9 @@ struct ContentView: View {
                                 .shadow(radius: 5)
                             }
                             .offset(y: showGraphic ? -50 : 0)
+                          //  .offset(y: showGraphic ? (offset < -50 ? offset - 100 : 0) : offset + 100)
                             
+                            GeometryReader { reader in
                             ZStack(alignment: .top) {
                                 LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.1412506998, green: 0.9358793497, blue: 0.6233919263, alpha: 1)), Color(#colorLiteral(red: 0, green: 0.6720501781, blue: 0.887023747, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .edgesIgnoringSafeArea(.all)
@@ -223,9 +228,17 @@ struct ContentView: View {
                                 
                                 VStack {
                                     Capsule()
-                                        .background(Color.red)
                                         .frame(width: 60, height: 5)
+                                        .foregroundColor(Color.secondary)
+                                        .shadow(radius: 3)
                                         .padding(.top)
+                                        .onTapGesture {
+                                            withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)){
+                                                
+                                                self.showGraphic.toggle()
+
+                                            }
+                                        }
                                     
                                     HStack {
                                         Spacer()
@@ -255,6 +268,7 @@ struct ContentView: View {
                                                                 .fill(Color.red)
                                                                 .frame(width: 20, height: self.covidData.getHeight(value: i.cases, height: g.frame(in: .global).height))
                                                                 .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 6, height: 6)))
+                                                                .shadow(radius: 3)
                                                         }
                                                     }
                                                     .padding(.leading, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 15)
@@ -286,12 +300,13 @@ struct ContentView: View {
                             .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 40, height: 40)))
                             .shadow(radius: 8)
                             .edgesIgnoringSafeArea(.bottom)
+                            /*
                             .offset(y: showGraphic ? (UIDevice.current.name == "iPhone SE (2nd generation)" ? 250 : 400) : 0)
                             .gesture(
                                 DragGesture()
                                     .onChanged { self.dragAmount = $0.translation }
                                     .onEnded { value in
-                                        if self.dragAmount.height > 150 {
+                                        if self.dragAmount.height > 50 {
                                             withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)){
                                                 
                                                 self.showGraphic = true
@@ -308,10 +323,57 @@ struct ContentView: View {
                                         }
                             
                             )
+                            */
+                            .offset(y: reader.frame(in: .global).height - bottomGraph)
+                            .offset(y: offset)
+                            .gesture(DragGesture().onChanged({ (value) in
+                                withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)) {
+                                    dragAmount = value.translation
+                                    if value.startLocation.y > reader.frame(in: .global).midX {
+                                        if value.translation.height < 0 && offset > (-reader.frame(in: .global).height + bottomGraph) {
+                                            offset = value.translation.height
+                                        }
+                                    }
+                                    if self.dragAmount.height > 200 {
+                                    showGraphic = true
+                                    }
+                                    if value.startLocation.y < reader.frame(in: .global).midX {
+                                        if value.translation.height > 0 && offset < 0 {
+                                            offset = (-reader.frame(in: .global).height + bottomGraph) + value.translation.height
+                                        }
+                                    }
+                                    if self.dragAmount.height < -200 {
+                                    showGraphic = false
+                                    }
+
+                                }
+                            }).onEnded({ (value) in
+                                withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8, blendDuration: 0)) {
+                                    if value.startLocation.y > reader.frame(in: .global).midX {
+                                        if -value.translation.height > reader.frame(in: .global).midX {
+                                            offset = (-reader.frame(in: .global).height + bottomGraph)
+                                            
+                                            return
+                                        }
+                                        offset = 0
+                                    }
+                                    if value.startLocation.y < reader.frame(in: .global).midX {
+                                        if value.translation.height < reader.frame(in: .global).midX {
+                                            offset = (-reader.frame(in: .global).height + bottomGraph)
+                                            
+                                            return
+                                        }
+                                        offset = 0
+                                    }
+                                }
+                            }))
+                                
+                            }
+                            .ignoresSafeArea(.all, edges: .bottom)
                         }
                     }
                     .alert(isPresented: self.$covidData.alert) {
-                        Alert(title: Text("Erro"), message: Text("País não encontrado ou sem casos.\nPor Favor escolha outo País !"), dismissButton: .destructive(Text("OK")) {
+                        Alert(title: Text("Erro"), message: Text("País não encontrado ou sem casos.\nPor Favor escolha outro País !"), dismissButton: .destructive(Text("OK")) {
                             covidData.country = covidData.paisTemp
                             covidData.loadData()
                         })
@@ -320,12 +382,14 @@ struct ContentView: View {
                         Color.black.opacity(0.4).edgesIgnoringSafeArea(.all)
                     }
                     
+                    GeometryReader { g in
                     PickerView(covidData: covidData)
                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height / 2)
                         .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 20, height: 20)))
-                        .offset(y: covidData.showPicker ? UIScreen.main.bounds.height / 3 : UIScreen.main.bounds.height)
+                      //  .offset(y: covidData.showPicker ? UIScreen.main.bounds.height / 3 : UIScreen.main.bounds.height)
+                        .offset(y: covidData.showPicker ? g.frame(in: .global).height - 300 : g.frame(in: .global).height + 50)
                         .animation(.default)
-
+                    }
                 }
                 
             } else {
