@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 struct ContentView: View {
     @StateObject var covidData = CovidData()
     @State private var dragAmount = CGSize.zero
-    @State private var offset: CGFloat = UIDevice.current.name == "iPhone SE (2nd generation)" ? -247 : -400
+    @State private var offset: CGFloat = UIDevice.current.name == "iPhone SE (2nd generation)" ? -247 : -337
     @State private var showGraphic = false
     private let bottomGraph: CGFloat = UIDevice.current.name == "iPhone SE (2nd generation)" ? 75 : 90
     
@@ -221,8 +221,8 @@ struct ContentView: View {
                             ZStack(alignment: .top) {
                                 LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.1412506998, green: 0.9358793497, blue: 0.6233919263, alpha: 1)), Color(#colorLiteral(red: 0, green: 0.6720501781, blue: 0.887023747, alpha: 1))]), startPoint: .topLeading, endPoint: .bottomTrailing)
                                     .edgesIgnoringSafeArea(.all)
-                                
-                                
+
+
                                 Blur(style: .systemMaterial)
                                     .edgesIgnoringSafeArea(.all)
                                 
@@ -269,7 +269,9 @@ struct ContentView: View {
                                                                 .frame(width: 20, height: self.covidData.getHeight(value: i.cases, height: g.frame(in: .global).height))
                                                                 .clipShape(Corners(corner: [.topLeft, .topRight], size: CGSize(width: 6, height: 6)))
                                                                 .shadow(radius: 3)
+
                                                         }
+
                                                     }
                                                     .padding(.leading, UIDevice.current.name == "iPhone SE (2nd generation)" ? 10 : 15)
                                                     
@@ -278,7 +280,8 @@ struct ContentView: View {
                                                         .foregroundColor(.secondary)
                                                         .lineLimit(1)
                                                         .padding(.bottom, UIDevice.current.name == "iPhone SE (2nd generation)" ? 5 : 0)
-                                                    
+                                                     
+                                                        
                                                 }
                                             }
                                         }
